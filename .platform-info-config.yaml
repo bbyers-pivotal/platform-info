@@ -8,3 +8,4 @@ BOSH_CA_CERT: #path to CA cert, can download from OpsMan / Settings / Advanced O
 VCENTER_URL: #vCenter FQDN/IP https://192.168.1.100
 VCENTER_USERNAME: #vCenter user with read access to VM info
 VCENTER_PASSWORD:
+WAVEFRONT_PROXY:
