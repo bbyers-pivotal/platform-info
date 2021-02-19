@@ -67,7 +67,7 @@ var tkgiCmd = &cobra.Command{
 				vmInfo.CID = vm.CID
 				tempVms = append(tempVms, vmInfo)
 			}
-			vmList = append(vmList, structs.ClusterList{deploymentName,tempVms})
+			vmList = append(vmList, structs.ClusterList{ Deployment: deploymentName, PKSVersion: c.PKSVersion, K8sVersion: c.K8sVersion, Name: c.Name, VMs: tempVms})
 		}
 
 		for i, cluster := range vmList {

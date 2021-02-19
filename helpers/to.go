@@ -28,7 +28,7 @@ func SendClusterDataToProxy(sender wavefront.Sender, clusters []structs.ClusterL
 				workerVMs += 1
 			}
 		}
-		sender.SendMetric("vmw.k8s.cluster.masters", float64(masterVMs), time.Now().Unix(), "platform-info", map[string]string{"env": environment, "deployment": cluster.Deployment})
-		sender.SendMetric("vmw.k8s.cluster.workers", float64(workerVMs), time.Now().Unix(), "platform-info", map[string]string{"env": environment, "deployment": cluster.Deployment})
+		sender.SendMetric("vmw.k8s.cluster.masters", float64(masterVMs), time.Now().Unix(), "platform-info", map[string]string{"env": environment, "deployment": cluster.Deployment, "name": cluster.Name, "k8sVersion": cluster.K8sVersion, "pksVersion": cluster.PKSVersion})
+		sender.SendMetric("vmw.k8s.cluster.workers", float64(workerVMs), time.Now().Unix(), "platform-info", map[string]string{"env": environment, "deployment": cluster.Deployment, "name": cluster.Name, "k8sVersion": cluster.K8sVersion, "pksVersion": cluster.PKSVersion})
 	}
 }

@@ -8,5 +8,8 @@ type VMInfo struct {
 }
 type ClusterList struct {
 	Deployment string
+	PKSVersion string
+	K8sVersion string
+	Name string
 	VMs []VMInfo
 }
