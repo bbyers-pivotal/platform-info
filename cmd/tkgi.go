@@ -38,6 +38,12 @@ var tkgiCmd = &cobra.Command{
 		vcenterPassword := helpers.GetFlagEnvironmentString(cmd, "vcenter-password", "vcenter_password", "Missing vCenter Password", true)
 
 		wavefrontProxy := helpers.GetFlagEnvironmentString(cmd, "wavefront-proxy", "wavefront_proxy", "", false)
+		environment := ""
+		if wavefrontProxy != "" {
+			environment = helpers.GetFlagEnvironmentString(cmd, "environment", "environment", "Missing Environment name", true)
+		}
+
+
 
 		fmt.Println("Logging into TKGI CLI")
 		helpers.TKGILogin(tkgiApi, tkgiUsername, tkgiPassword)
@@ -79,11 +85,13 @@ var tkgiCmd = &cobra.Command{
 			}
 		}
 
+		cores := vcpus / vCpuToCoreRatio
 		fmt.Println("TKGI vCpus:", vcpus)
-		fmt.Println("TKGI Cores:", vcpus / vCpuToCoreRatio)
+		fmt.Println("TKGI Cores:", cores)
 
 		if wavefrontProxy != "" {
-			helpers.SendDataToProxy(vmList)
+			helpers.SendCPUDataToProxy(vcpus, cores, wavefrontProxy, environment)
+			helpers.SendClusterDataToProxy(vmList, wavefrontProxy, environment)
 		}
 		//fmt.Println(time.Now())
 	},
@@ -106,4 +114,5 @@ func init() {
 	tkgiCmd.Flags().StringP("vcenter-password", "", "", "vCenter admin password [$PI_VCENTER_PASSWORD]")
 
 	tkgiCmd.Flags().StringP("wavefront-proxy", "", "", "Wavefront Proxy [$PI_WAVEFRONT_PROXY]")
+	tkgiCmd.Flags().StringP("environment", "", "", "Environment Name [$PI_ENVIRONMENT]")
 }

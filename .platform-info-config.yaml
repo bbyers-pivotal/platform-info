@@ -9,3 +9,4 @@ VCENTER_URL: #vCenter FQDN/IP https://192.168.1.100
 VCENTER_USERNAME: #vCenter user with read access to VM info
 VCENTER_PASSWORD:
 WAVEFRONT_PROXY:
+ENVIRONMENT:
