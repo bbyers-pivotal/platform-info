@@ -1,17 +1,17 @@
-#Build/Run Locally
+# Build/Run Locally
 
-###Download dependencies
+### Download dependencies
 Download the following CLIs for your OS and add to your path
 - BOSH CLI (https://github.com/cloudfoundry/bosh-cli/releases)
 - PKS CLI (https://network.pivotal.io/products/pivotal-container-service)
 - GOVC CLI (https://github.com/vmware/govmomi/releases)
 
-###Build the app
+### Build the app
 Build using newer GO (built with go1.15+)
 - `go build -o platform-info`
 - `chmod +x platform-info`
 
-#Build Docker Image
+# Build Docker Image
 Download the following Linux flavors of the CLIs and add to the clis directory 
 - BOSH CLI (https://github.com/cloudfoundry/bosh-cli/releases)
 - PKS CLI (https://network.pivotal.io/products/pivotal-container-service)
