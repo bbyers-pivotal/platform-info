@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	wavefront "github.com/wavefronthq/wavefront-sdk-go/senders"
+	"os"
 	"platform-info/helpers"
 	"platform-info/structs"
 )
@@ -90,8 +92,26 @@ var tkgiCmd = &cobra.Command{
 		fmt.Println("TKGI Cores:", cores)
 
 		if wavefrontProxy != "" {
-			helpers.SendCPUDataToProxy(vcpus, cores, wavefrontProxy, environment)
-			helpers.SendClusterDataToProxy(vmList, wavefrontProxy, environment)
+
+			proxyCfg := &wavefront.ProxyConfiguration{
+				Host: wavefrontProxy,
+				MetricsPort: 2878,
+				DistributionPort: 2878,
+				TracingPort: 30000,
+				FlushIntervalSeconds: 10,
+			}
+
+			sender, err := wavefront.NewProxySender(proxyCfg)
+			if err != nil {
+				fmt.Println("Error setting up Wavefront connection", err)
+				os.Exit(1)
+			}
+
+			helpers.SendCPUDataToProxy(sender, vcpus, cores, wavefrontProxy, environment)
+			helpers.SendClusterDataToProxy(sender, vmList, wavefrontProxy, environment)
+
+			sender.Flush()
+			sender.Close()
 		}
 		//fmt.Println(time.Now())
 	},

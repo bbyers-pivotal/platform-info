@@ -22,3 +22,12 @@ func GetFlagEnvironmentString(cmd *cobra.Command, flag string, env string, messa
 	}
 	return value
 }
+
+func Contains(a []string, x string) bool {
+	for _, n := range a {
+		if x == n {
+			return true
+		}
+	}
+	return false
+}
