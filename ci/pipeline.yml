@@ -1,7 +1,7 @@
 jobs:
 - name: platform-info
   plan:
-    - task: simple-task
+    - task: tkgi cores
       config:
         platform: linux
         image_resource:
