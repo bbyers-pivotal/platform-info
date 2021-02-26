@@ -3,7 +3,6 @@ package helpers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"os"
 	"os/exec"
 )
@@ -32,20 +31,17 @@ func GetVMInfo(username, password, url, ip string) VMInfo {
 	cmd.Stdout = buf
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		fmt.Println("error running govc", err)
-		os.Exit(1)
+		Bail("error running govc", err)
 	}
 
 	list := vmInfoResponse{}
 
 	if err := json.NewDecoder(buf).Decode(&list); err != nil {
-		fmt.Println("Error decoding vm info json", err)
-		os.Exit(1)
+		Bail("Error decoding vm info json", err)
 	}
 
 	if len(list.VirtualMachines) > 1 {
-		fmt.Println("Found more than one VM with IP " + ip)
-		os.Exit(1)
+		Bail("Found more than one VM with IP " + ip, nil)
 	}
 
 	vm := list.VirtualMachines[0]

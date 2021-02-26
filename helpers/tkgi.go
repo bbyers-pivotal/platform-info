@@ -3,7 +3,6 @@ package helpers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"os"
 	"os/exec"
 )
@@ -22,8 +21,7 @@ func TKGILogin (api string, username string, password string) {
 	cmd.Stdout = buf
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		fmt.Println("error logging into TKGI foundation " + api, err)
-		os.Exit(1)
+		Bail("error logging into TKGI foundation " + api, err)
 	}
 }
 
@@ -34,15 +32,13 @@ func TKGIClusters () clusterList {
 	cmd.Stdout = buf
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		fmt.Println("error running pks clusters", err)
-		os.Exit(1)
+		Bail("error running pks clusters", err)
 	}
 
 	list := clusterList{}
 
 	if err := json.NewDecoder(buf).Decode(&list); err != nil {
-		fmt.Println("Error decoding clusters json", err)
-		os.Exit(1)
+		Bail("Error decoding clusters json", err)
 	}
 	return list
 }

@@ -2,12 +2,11 @@ package cmd
 
 import (
   "fmt"
-  "os"
   "github.com/spf13/cobra"
+  "platform-info/helpers"
 
   homedir "github.com/mitchellh/go-homedir"
   "github.com/spf13/viper"
-
 )
 
 var cfgFile string
@@ -23,8 +22,7 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
   if err := rootCmd.Execute(); err != nil {
-    fmt.Println(err)
-    os.Exit(1)
+    helpers.Bail("error starting app", err)
   }
 }
 
@@ -43,8 +41,7 @@ func initConfig() {
     // Find home directory.
     home, err := homedir.Dir()
     if err != nil {
-      fmt.Println(err)
-      os.Exit(1)
+      helpers.Bail("error finding home dir", err)
     }
 
     // Search config in home directory with name ".platform-info-config" (without extension).

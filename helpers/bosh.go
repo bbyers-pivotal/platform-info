@@ -3,7 +3,6 @@ package helpers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"os"
 	"os/exec"
 )
@@ -31,15 +30,13 @@ func BOSHVMs (api string, username string, password string, ca_cert string, depl
 	cmd.Stdout = buf
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		fmt.Println("error running bosh vms", err)
-		os.Exit(1)
+		Bail("error running bosh vms", err)
 	}
 
 	response := vmsResponse{}
 
 	if err := json.NewDecoder(buf).Decode(&response); err != nil {
-		fmt.Println("Error decoding clusters json", err)
-		os.Exit(1)
+		Bail("Error decoding clusters json", err)
 	}
 
 	info := VMList{}

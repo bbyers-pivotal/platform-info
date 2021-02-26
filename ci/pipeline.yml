@@ -1,0 +1,29 @@
+jobs:
+- name: platform-info
+  plan:
+    - task: simple-task
+      config:
+        platform: linux
+        image_resource:
+          type: registry-image
+          source: { repository: brianbyers/platform-info }
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              printf '%s\n' "$BOSH_CA_CERT" > cert
+              platform-info tkgi --bosh-ca-cert cert
+        params:
+          PI_TKGI_API: ((TKGI_API))
+          PI_TKGI_USERNAME: ((TKGI_USERNAME))
+          PI_TKGI_PASSWORD: ((TKGI_PASSWORD))
+          PI_BOSH_API: ((BOSH_API))
+          PI_BOSH_CLIENT: ((BOSH_CLIENT))
+          PI_BOSH_CLIENT_SECRET: ((BOSH_CLIENT_SECRET))
+          BOSH_CA_CERT: ((BOSH_CA_CERT))
+          PI_VCENTER_URL: ((VCENTER_URL))
+          PI_VCENTER_USERNAME: ((VCENTER_USERNAME))
+          PI_VCENTER_PASSWORD: ((VCENTER_PASSWORD))
+          PI_WAVEFRONT_PROXY: ((WAVEFRONT_PROXY))
+          PI_ENVIRONMENT: ((ENVIRONMENT))

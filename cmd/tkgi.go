@@ -5,7 +5,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	wavefront "github.com/wavefronthq/wavefront-sdk-go/senders"
-	"os"
 	"platform-info/helpers"
 	"platform-info/structs"
 )
@@ -103,8 +102,7 @@ var tkgiCmd = &cobra.Command{
 
 			sender, err := wavefront.NewProxySender(proxyCfg)
 			if err != nil {
-				fmt.Println("Error setting up Wavefront connection", err)
-				os.Exit(1)
+				helpers.Bail("Error setting up Wavefront connection", err)
 			}
 
 			helpers.SendCPUDataToProxy(sender, vcpus, cores, wavefrontProxy, environment)

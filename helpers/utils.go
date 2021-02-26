@@ -14,8 +14,7 @@ func GetFlagEnvironmentString(cmd *cobra.Command, flag string, env string, messa
 
 		if required {
 			if value == "" {
-				fmt.Println(message)
-				os.Exit(1)
+				Bail(message, nil)
 			}
 		}
 		return value
@@ -23,11 +22,11 @@ func GetFlagEnvironmentString(cmd *cobra.Command, flag string, env string, messa
 	return value
 }
 
-func Contains(a []string, x string) bool {
-	for _, n := range a {
-		if x == n {
-			return true
-		}
+func Bail(message string, err error) {
+	if err == nil {
+		fmt.Println(message)
+	} else {
+		fmt.Println(message, err)
 	}
-	return false
+	os.Exit(1)
 }
