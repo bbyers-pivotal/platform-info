@@ -29,7 +29,7 @@ Check the help for more options `./platform-info --help`
 
 If you're feeling adventurous, you can also provide all the credential options as environment variables or flags to the CLI 
 
-# Use via Concourse
+# Run via Concourse
 - Copy `ci/vars-sample.yml` and add appropriate connection info
 
 `fly -t <your target> set-pipeline -p platform-info -c ci/pipeline.yml -l ci/vars.yml`
