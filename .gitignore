@@ -1,5 +1,5 @@
 platform-info
 .idea
 .govmomi
-build/vars.yml
-run/vars.yml
+ci/build/vars.yml
+ci/run/vars.yml
