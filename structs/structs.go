@@ -13,3 +13,8 @@ type ClusterList struct {
 	Name string
 	VMs []VMInfo
 }
+
+type ServiceInstance struct {
+	Deployment string
+	VMs []VMInfo
+}

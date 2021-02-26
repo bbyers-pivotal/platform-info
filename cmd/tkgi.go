@@ -5,14 +5,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	wavefront "github.com/wavefronthq/wavefront-sdk-go/senders"
+	"os"
 	"platform-info/helpers"
 	"platform-info/structs"
-)
-
-
-
-const (
-	vCpuToCoreRatio = 2
+	"strings"
 )
 
 var tkgiCmd = &cobra.Command{
@@ -77,18 +73,34 @@ var tkgiCmd = &cobra.Command{
 			}
 		}
 
+		f, err := os.Create("results")
+		if err != nil {
+			helpers.Bail("error creating output file", err)
+		}
+
+		defer f.Close()
+
+		var sb strings.Builder
+		sb.WriteString("Environment: " + environment + "\n\n")
+
 		vcpus := 0
 		for _, cluster := range vmList {
-			fmt.Println("BOSH deployment", cluster.Deployment)
+			sb.WriteString(fmt.Sprintf("BOSH deployment: %s\n", cluster.Deployment))
 			for _, vm := range cluster.VMs {
-				fmt.Println("VM instance:", vm.Instance, "vCPUs:", vm.VCPUs)
+				sb.WriteString(fmt.Sprintf("VM instance: %s - vCPUS: %v\n", vm.Instance, vm.VCPUs))
 				vcpus += vm.VCPUs
 			}
+			sb.WriteString("\n")
 		}
 
 		cores := vcpus / vCpuToCoreRatio
-		fmt.Println("TKGI vCpus:", vcpus)
-		fmt.Println("TKGI Cores:", cores)
+
+		sb.WriteString(fmt.Sprintf("TKGI vCpus: %v\n", vcpus))
+		sb.WriteString(fmt.Sprintf("TGKI Cores: %v\n", cores))
+
+		fmt.Println(sb.String())
+		f.WriteString(sb.String())
+		f.Sync()
 
 		if wavefrontProxy != "" {
 
@@ -105,8 +117,8 @@ var tkgiCmd = &cobra.Command{
 				helpers.Bail("Error setting up Wavefront connection", err)
 			}
 
-			helpers.SendCPUDataToProxy(sender, vcpus, cores, wavefrontProxy, environment)
-			helpers.SendClusterDataToProxy(sender, vmList, wavefrontProxy, environment)
+			helpers.SendK8sCPUDataToProxy(sender, vcpus, cores, environment)
+			helpers.SendClusterDataToProxy(sender, vmList, environment)
 
 			sender.Flush()
 			sender.Close()
@@ -116,7 +128,7 @@ var tkgiCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(tkgiCmd)
+	boshCmd.AddCommand(tkgiCmd)
 
 	tkgiCmd.Flags().StringP("tkgi-api", "", "","TKGI (PKS) API [$PI_TKGI_API]")
 	tkgiCmd.Flags().StringP("tkgi-username", "", "",  "TKGI admin user [$PI_TKGI_USERNAME]")

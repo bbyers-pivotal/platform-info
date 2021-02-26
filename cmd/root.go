@@ -9,6 +9,11 @@ import (
   "github.com/spf13/viper"
 )
 
+
+const (
+  vCpuToCoreRatio = 2
+)
+
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
