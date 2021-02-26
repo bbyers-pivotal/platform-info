@@ -1,0 +1,25 @@
+---
+bosh-ca-cert: |
+  -----BEGIN CERTIFICATE-----
+
+  -----END CERTIFICATE-----
+bosh-api: #BOSH director IP address ex 192.168.1.10
+bosh-client: #BOSH client, can run creds from OpsMan Director creds / Bosh Commandline Credentials
+bosh-client-secret: #BOSH client, can run creds from OpsMan Director creds / Bosh Commandline Credentials
+environment:
+tkgi-api: #PKS/TKGI API FQDN/IP ex. api.pks.mydomain.com
+tkgi-username: #PKS/TKGI username that can access clusters
+tkgi-password:
+vcenter-url: #vCenter FQDN/IP https://192.168.1.100
+vcenter-username: #vCenter user with read access to VM info
+vcenter-password:
+wavefront-proxy:
+
+email-username:
+email-password:
+email-host-origin: example.com
+email-from-address: you@example.com
+email-to-addresses: [ "you@example.com" ]
+email-smtp-server:
+email-port: "587"
+

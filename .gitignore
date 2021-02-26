@@ -1,4 +1,5 @@
-clis
 platform-info
 .idea
 .govmomi
+build/vars.yml
+run/vars.yml

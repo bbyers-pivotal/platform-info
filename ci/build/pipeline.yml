@@ -1,0 +1,37 @@
+resources:
+  - name: platform-info-docker-image
+    source:
+      password: ((docker-hub-password))
+      repository: brianbyers/platform-info
+      username: ((docker-hub-username))
+    type: registry-image
+  - name: repo
+    source:
+      branch: master
+      private_key: ((git-private-key))
+      uri: git@github.com:bbyers-pivotal/platform-info.git
+    type: git
+
+jobs:
+  - name: build-and-push
+    plan:
+      - get: repo
+      - config:
+          container_limits: {}
+          image_resource:
+            source:
+              repository: vito/oci-build-task
+            type: registry-image
+          inputs:
+            - name: repo
+              path: .
+          outputs:
+            - name: image
+          platform: linux
+          run:
+            path: build
+        privileged: true
+        task: build
+      - params:
+          image: image/image.tar
+        put: platform-info-docker-image

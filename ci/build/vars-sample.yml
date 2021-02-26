@@ -1,0 +1,6 @@
+docker-hub-username:
+docker-hub-password:
+git-private-key: |
+  -----BEGIN RSA PRIVATE KEY-----
+
+  -----END RSA PRIVATE KEY-----

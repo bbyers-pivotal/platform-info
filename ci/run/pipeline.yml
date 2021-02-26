@@ -1,0 +1,90 @@
+resource_types:
+  - name: email
+    source:
+      repository: pcfseceng/email-resource
+    type: docker-image
+resources:
+  - name: send-results
+    source:
+      from: ((email-from-address))
+      smtp:
+        host: ((email-smtp-server))
+        host_origin: ((email-host-origin))
+        password: ((email-password))
+        port: ((email-port))
+        username: ((email-username))
+      to: ((email-to-addresses))
+    type: email
+
+jobs:
+  - name: TKGI Cores
+    plan:
+      - config:
+          container_limits: {}
+          image_resource:
+            source:
+              repository: brianbyers/platform-info
+            type: registry-image
+          outputs:
+            - name: files
+          params:
+            BOSH_CA_CERT: ((bosh-ca-cert))
+            PI_BOSH_API: ((bosh-api))
+            PI_BOSH_CLIENT: ((bosh-client))
+            PI_BOSH_CLIENT_SECRET: ((bosh-client-secret))
+            PI_ENVIRONMENT: ((environment))
+            PI_TKGI_API: ((tkgi-api))
+            PI_TKGI_USERNAME: ((tkgi-username))
+            PI_TKGI_PASSWORD: ((tkgi-password))
+            PI_VCENTER_USERNAME: ((vcenter-username))
+            PI_VCENTER_PASSWORD: ((vcenter-password))
+            PI_VCENTER_URL: ((vcenter-url))
+            PI_WAVEFRONT_PROXY: ((wavefront-proxy))
+          platform: linux
+          run:
+            args:
+              - -exc
+              - |
+                printf '%s\n' "$BOSH_CA_CERT" > cert
+                platform-info bosh tkgi --bosh-ca-cert cert
+                cp results files/results
+            path: sh
+        task: go
+      - params:
+          body: files/results
+          subject_text: TKGI Cores
+        put: send-results
+  - name: TGF Cores
+    plan:
+      - config:
+          container_limits: {}
+          image_resource:
+            source:
+              repository: brianbyers/platform-info
+            type: registry-image
+          outputs:
+            - name: files
+          params:
+            BOSH_CA_CERT: ((bosh-ca-cert))
+            PI_BOSH_API: ((bosh-api))
+            PI_BOSH_CLIENT: ((bosh-client))
+            PI_BOSH_CLIENT_SECRET: ((bosh-client-secret))
+            PI_ENVIRONMENT: ((environment))
+            PI_VCENTER_USERNAME: ((vcenter-username))
+            PI_VCENTER_PASSWORD: ((vcenter-password))
+            PI_VCENTER_URL: ((vcenter-url))
+            PI_WAVEFRONT_PROXY: ((wavefront-proxy))
+          platform: linux
+          run:
+            args:
+              - -exc
+              - |
+                printf '%s\n' "$BOSH_CA_CERT" > cert
+                platform-info bosh tgf --bosh-ca-cert cert
+                cp results files/results
+            path: sh
+        task: go
+      - params:
+          body: files/results
+          subject_text: TGF Cores - dev
+        put: send-results
