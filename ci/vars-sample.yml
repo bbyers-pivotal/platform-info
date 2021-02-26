@@ -1,17 +1,16 @@
 ---
-TKGI_API:
-TKGI_USERNAME:
+TKGI_API: #PKS/TKGI API FQDN/IP ex. api.pks.mydomain.com
+TKGI_USERNAME: #PKS/TKGI username that can access clusters
 TKGI_PASSWORD:
-BOSH_API:
-BOSH_CLIENT: ops_manager
-BOSH_CLIENT_SECRET:
+BOSH_API: #BOSH director IP address ex 192.168.1.10
+BOSH_CLIENT: #BOSH client, can use creds from OpsMan Director creds / Bosh Commandline Credentials
+BOSH_CLIENT_SECRET: #BOSH client, can use creds from OpsMan Director creds / Bosh Commandline Credentials
 BOSH_CA_CERT: |
   -----BEGIN CERTIFICATE-----
   .......
   -----END CERTIFICATE-----
-
-VCENTER_URL:
-VCENTER_USERNAME:
+VCENTER_URL: #vCenter FQDN/IP https://192.168.1.100
+VCENTER_USERNAME: #vCenter user with read access to VM info
 VCENTER_PASSWORD:
 WAVEFRONT_PROXY:
 ENVIRONMENT:
