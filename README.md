@@ -23,7 +23,7 @@ Copy the `.platform-info-config.yaml` file to your home directory and fill out t
 
 Example for running the image using the config file
 
-`docker run -v <path to your OpsMan CA Cert>:/mnt/cert -v ~/.platform-info-config.yaml:/mnt/.platform-info-config.yaml <your docker repo>/platform-info:latest /usr/bin/platform-info tkgi --config /mnt/.platform-info-config.yaml`
+`docker run -v <path to your OpsMan CA Cert>:/mnt/cert -v ~/.platform-info-config.yaml:/mnt/.platform-info-config.yaml <your docker repo>/platform-info:latest /usr/bin/platform-info bosh tkgi --config /mnt/.platform-info-config.yaml`
 
 Check the help for more options `./platform-info --help`
 
