@@ -117,13 +117,12 @@ var tkgiCmd = &cobra.Command{
 				helpers.Bail("Error setting up Wavefront connection", err)
 			}
 
-			helpers.SendK8sCPUDataToProxy(sender, vcpus, cores, environment)
-			helpers.SendClusterDataToProxy(sender, vmList, environment)
+			//helpers.SendK8sCPUDataToProxy(sender, vcpus, cores, environment)
+			//helpers.SendClusterDataToProxy(sender, vmList, environment)
 
 			sender.Flush()
 			sender.Close()
 		}
-		//fmt.Println(time.Now())
 	},
 }
 

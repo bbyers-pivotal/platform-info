@@ -6,17 +6,19 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"platform-info/helpers"
+	"platform-info/structs"
 	"strings"
 )
 
 
-var tgfCmd = &cobra.Command{
-	Use:   "tgf",
-	Short: "Grab TGF cluster info",
-	Long: `Grabs TGF cluster info`,
+
+var mysqlCmd = &cobra.Command{
+	Use:   "mysql",
+	Short: "Grab MySQL cluster info",
+	Long: `Grabs MySQL cluster info`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		var serviceName = "p-cloudcache"
+		var serviceNames  = []string{"pivotal-mysql"}
 		//fmt.Println(time.Now())
 		viper.SetEnvPrefix("PI")
 		viper.AutomaticEnv() // read in environment variables that match
@@ -50,7 +52,14 @@ var tgfCmd = &cobra.Command{
 			Password: vcenterPassword,
 		}
 
-		instances := helpers.GetServiceInstances(bci, vci, serviceName, false)
+		var instances []structs.ServiceInstance
+		for _, name := range serviceNames {
+			sis := helpers.GetServiceInstances(bci, vci, name, false)
+			for _, si := range sis {
+				instances = append(instances, si)
+			}
+		}
+
 
 		f, err := os.Create("results")
 		if err != nil {
@@ -73,8 +82,8 @@ var tgfCmd = &cobra.Command{
 		}
 		cores := vcpus / vCpuToCoreRatio
 
-		sb.WriteString(fmt.Sprintf("TGF vCpus: %v\n", vcpus))
-		sb.WriteString(fmt.Sprintf("TGF Cores: %v\n", cores))
+		sb.WriteString(fmt.Sprintf("MySQL vCpus: %v\n", vcpus))
+		sb.WriteString(fmt.Sprintf("MySQL Cores: %v\n", cores))
 
 		fmt.Println(sb.String())
 		f.WriteString(sb.String())
@@ -105,17 +114,17 @@ var tgfCmd = &cobra.Command{
 }
 
 func init() {
-	boshCmd.AddCommand(tgfCmd)
+	boshCmd.AddCommand(mysqlCmd)
 
-	tgfCmd.Flags().StringP("bosh-api", "", "","BOSH API [$PI_BOSH_API]")
-	tgfCmd.Flags().StringP("bosh-client", "", "",  "BOSH client [$PI_BOSH_CLIENT]")
-	tgfCmd.Flags().StringP("bosh-client-secret", "", "", "BOSH secret [$PI_BOSH_CLIENT_SECRET]")
-	tgfCmd.Flags().StringP("bosh-ca-cert", "", "", "BOSH CA Cert [$PI_BOSH_CA_CERT]")
+	mysqlCmd.Flags().StringP("bosh-api", "", "","BOSH API [$PI_BOSH_API]")
+	mysqlCmd.Flags().StringP("bosh-client", "", "",  "BOSH client [$PI_BOSH_CLIENT]")
+	mysqlCmd.Flags().StringP("bosh-client-secret", "", "", "BOSH secret [$PI_BOSH_CLIENT_SECRET]")
+	mysqlCmd.Flags().StringP("bosh-ca-cert", "", "", "BOSH CA Cert [$PI_BOSH_CA_CERT]")
 
-	tgfCmd.Flags().StringP("vcenter-url", "", "","vCenter URL [$PI_VCENTER_URL]")
-	tgfCmd.Flags().StringP("vcenter-username", "", "",  "vCenter admin user [$PI_VCENTER_USERNAME]")
-	tgfCmd.Flags().StringP("vcenter-password", "", "", "vCenter admin password [$PI_VCENTER_PASSWORD]")
+	mysqlCmd.Flags().StringP("vcenter-url", "", "","vCenter URL [$PI_VCENTER_URL]")
+	mysqlCmd.Flags().StringP("vcenter-username", "", "",  "vCenter admin user [$PI_VCENTER_USERNAME]")
+	mysqlCmd.Flags().StringP("vcenter-password", "", "", "vCenter admin password [$PI_VCENTER_PASSWORD]")
 
-	tgfCmd.Flags().StringP("wavefront-proxy", "", "", "Wavefront Proxy [$PI_WAVEFRONT_PROXY]")
-	tgfCmd.Flags().StringP("environment", "", "", "Environment Name [$PI_ENVIRONMENT]")
+	mysqlCmd.Flags().StringP("wavefront-proxy", "", "", "Wavefront Proxy [$PI_WAVEFRONT_PROXY]")
+	mysqlCmd.Flags().StringP("environment", "", "", "Environment Name [$PI_ENVIRONMENT]")
 }

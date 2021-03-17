@@ -18,8 +18,8 @@ type VCenterConnectionInfo struct {
 	Password string
 }
 
-func GetServiceInstances(bci BoshConnectionInfo, vci VCenterConnectionInfo, serviceName string) []structs.ServiceInstance {
-	serviceInstances := ServiceDeployments(bci.API, bci.Client, bci.ClientSecret, bci.CACert, serviceName)
+func GetServiceInstances(bci BoshConnectionInfo, vci VCenterConnectionInfo, serviceName string, includeParent bool) []structs.ServiceInstance {
+	serviceInstances := ServiceDeployments(bci.API, bci.Client, bci.ClientSecret, bci.CACert, serviceName, includeParent)
 
 	vmList := []structs.ServiceInstance{}
 

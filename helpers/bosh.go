@@ -62,7 +62,7 @@ func BOSHVMs (api string, username string, password string, ca_cert string, depl
 	return info
 }
 
-func ServiceDeployments (api string, username string, password string, ca_cert string, serviceName string) []string {
+func ServiceDeployments (api string, username string, password string, ca_cert string, serviceName string, includeParent bool) []string {
 	buf := bytes.NewBuffer([]byte{})
 
 	cmd := exec.Command("bosh", "--client="+ username, "--client-secret="+ password, "--ca-cert="+ ca_cert, "--environment="+api, "deployments", "--json")
@@ -83,6 +83,10 @@ func ServiceDeployments (api string, username string, password string, ca_cert s
 	for _, r := range response.Tables {
 		for _, deployment := range r.Rows {
 			if strings.Contains(deployment.Service, serviceName) {
+				deployments = append(deployments, deployment.Name)
+			}
+
+			if includeParent && strings.Contains(deployment.Name, serviceName) {
 				deployments = append(deployments, deployment.Name)
 			}
 		}

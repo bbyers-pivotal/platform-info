@@ -52,7 +52,7 @@ jobs:
         task: go
       - params:
           body: files/results
-          subject_text: TKGI Cores
+          subject_text: TKGI Cores - ((environment))
         put: send-results
   - name: TGF Cores
     plan:
@@ -86,5 +86,5 @@ jobs:
         task: go
       - params:
           body: files/results
-          subject_text: TGF Cores - dev
+          subject_text: TGF Cores - ((environment))
         put: send-results

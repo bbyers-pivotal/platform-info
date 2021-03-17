@@ -6,17 +6,19 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"platform-info/helpers"
+	"platform-info/structs"
 	"strings"
 )
 
 
-var tgfCmd = &cobra.Command{
-	Use:   "tgf",
-	Short: "Grab TGF cluster info",
-	Long: `Grabs TGF cluster info`,
+
+var rabbitmqCmd = &cobra.Command{
+	Use:   "rabbitmq",
+	Short: "Grab RabbitMQ cluster info",
+	Long: `Grabs RabbitMQ cluster info`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		var serviceName = "p-cloudcache"
+		var serviceNames  = []string{"p-rabbitmq", "p.rabbitmq"}
 		//fmt.Println(time.Now())
 		viper.SetEnvPrefix("PI")
 		viper.AutomaticEnv() // read in environment variables that match
@@ -50,7 +52,14 @@ var tgfCmd = &cobra.Command{
 			Password: vcenterPassword,
 		}
 
-		instances := helpers.GetServiceInstances(bci, vci, serviceName, false)
+		var instances []structs.ServiceInstance
+		for _, name := range serviceNames {
+			sis := helpers.GetServiceInstances(bci, vci, name, true)
+			for _, si := range sis {
+				instances = append(instances, si)
+			}
+		}
+
 
 		f, err := os.Create("results")
 		if err != nil {
@@ -73,8 +82,8 @@ var tgfCmd = &cobra.Command{
 		}
 		cores := vcpus / vCpuToCoreRatio
 
-		sb.WriteString(fmt.Sprintf("TGF vCpus: %v\n", vcpus))
-		sb.WriteString(fmt.Sprintf("TGF Cores: %v\n", cores))
+		sb.WriteString(fmt.Sprintf("RabbitMQ vCpus: %v\n", vcpus))
+		sb.WriteString(fmt.Sprintf("RabbitMQ Cores: %v\n", cores))
 
 		fmt.Println(sb.String())
 		f.WriteString(sb.String())
@@ -105,17 +114,17 @@ var tgfCmd = &cobra.Command{
 }
 
 func init() {
-	boshCmd.AddCommand(tgfCmd)
+	boshCmd.AddCommand(rabbitmqCmd)
 
-	tgfCmd.Flags().StringP("bosh-api", "", "","BOSH API [$PI_BOSH_API]")
-	tgfCmd.Flags().StringP("bosh-client", "", "",  "BOSH client [$PI_BOSH_CLIENT]")
-	tgfCmd.Flags().StringP("bosh-client-secret", "", "", "BOSH secret [$PI_BOSH_CLIENT_SECRET]")
-	tgfCmd.Flags().StringP("bosh-ca-cert", "", "", "BOSH CA Cert [$PI_BOSH_CA_CERT]")
+	rabbitmqCmd.Flags().StringP("bosh-api", "", "","BOSH API [$PI_BOSH_API]")
+	rabbitmqCmd.Flags().StringP("bosh-client", "", "",  "BOSH client [$PI_BOSH_CLIENT]")
+	rabbitmqCmd.Flags().StringP("bosh-client-secret", "", "", "BOSH secret [$PI_BOSH_CLIENT_SECRET]")
+	rabbitmqCmd.Flags().StringP("bosh-ca-cert", "", "", "BOSH CA Cert [$PI_BOSH_CA_CERT]")
 
-	tgfCmd.Flags().StringP("vcenter-url", "", "","vCenter URL [$PI_VCENTER_URL]")
-	tgfCmd.Flags().StringP("vcenter-username", "", "",  "vCenter admin user [$PI_VCENTER_USERNAME]")
-	tgfCmd.Flags().StringP("vcenter-password", "", "", "vCenter admin password [$PI_VCENTER_PASSWORD]")
+	rabbitmqCmd.Flags().StringP("vcenter-url", "", "","vCenter URL [$PI_VCENTER_URL]")
+	rabbitmqCmd.Flags().StringP("vcenter-username", "", "",  "vCenter admin user [$PI_VCENTER_USERNAME]")
+	rabbitmqCmd.Flags().StringP("vcenter-password", "", "", "vCenter admin password [$PI_VCENTER_PASSWORD]")
 
-	tgfCmd.Flags().StringP("wavefront-proxy", "", "", "Wavefront Proxy [$PI_WAVEFRONT_PROXY]")
-	tgfCmd.Flags().StringP("environment", "", "", "Environment Name [$PI_ENVIRONMENT]")
+	rabbitmqCmd.Flags().StringP("wavefront-proxy", "", "", "Wavefront Proxy [$PI_WAVEFRONT_PROXY]")
+	rabbitmqCmd.Flags().StringP("environment", "", "", "Environment Name [$PI_ENVIRONMENT]")
 }
